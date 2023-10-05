@@ -1,23 +1,17 @@
-import SizedBox from "@/components/SizedBox";
 import Header from "@/components/custom/Header";
-import MosquitoCountBarGraph from "@/components/custom/MosquitoCountBarGraph";
-import MosquitoDetectedRow from "@/components/custom/MosquitoDetectedRow";
-import Ocean from "@/components/custom/Ocean";
-import ExitIcon from "@/components/svg/icon/ExitIcon";
+import MyMap from "@/components/custom/MyMap";
 import SettingsIcon from "@/components/svg/icon/SettingsIcon";
-import signOutClick from "@/myfunctions/signOutClick";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { PagesWrapperContext } from "./PagesWrapper";
-import DeviceTooFarNotif from "@/components/custom/DeviceTooFarNotif";
-import haversineDistance from "@/myfunctions/harvesineDistance";
-import notify from "@/myfunctions/notify";
+import ExitIcon from "@/components/svg/icon/ExitIcon";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import ImportIcon from "@/components/custom/ImportIcon";
+import { motion } from "framer-motion";
 
 interface MainPageInterface {}
 const MainPage: React.FC<MainPageInterface> = () => {
-  const { setShowSettingsWithEnd, readingData } =
-    useContext(PagesWrapperContext);
-
-  const [deviceTooFar, setDeviceTooFar] = useState(false);
+  const { user, setShowSignIn, readingData } = useContext(PagesWrapperContext);
 
   //! DISABLE BACK DEFAULT BEHAVIOUR
   useEffect(() => {
@@ -41,53 +35,30 @@ const MainPage: React.FC<MainPageInterface> = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const timeIntervalId = setInterval(() => {
-      if (readingData) {
-        const distance = haversineDistance(
-          readingData.geo_lat,
-          readingData.geo_long,
-          readingData.lat,
-          readingData.long
-        );
-        console.log(distance);
-        if (distance > readingData.geo_radius / 1000) {
-          setDeviceTooFar(true);
-          notify(() => {
-            return (
-              <DeviceTooFarNotif
-                setShowSettingsWithEnd={setShowSettingsWithEnd}
-              />
-            );
-          });
-        } else {
-          setDeviceTooFar(false);
-        }
-      }
-    }, 60000);
-
-    return () => {
-      clearInterval(timeIntervalId);
-    };
-  }, [readingData]);
-
-  console.log(deviceTooFar);
   return (
     <div>
       {/* HEADER */}
       <Header>
-        <ExitIcon onClick={signOutClick} />
-        <SettingsIcon onClick={() => setShowSettingsWithEnd(true)} />
+        {user === null ? (
+          <SettingsIcon onClick={() => setShowSignIn(true)} />
+        ) : (
+          <div className="flex items-center gap-10">
+            <ExitIcon onClick={() => signOut(auth)} />
+            <motion.div
+              className="flex items-center border border-black rounded-lg pl-1 pr-3 cursor-pointer select-none"
+              whileTap={{ scale: 0.9 }}
+            >
+              <div className="scale-50">
+                <ImportIcon />
+              </div>
+              <p className="">Import Data</p>
+            </motion.div>
+          </div>
+        )}
       </Header>
 
       {/* CONTENT */}
-      <SizedBox height={30} />
-      <MosquitoCountBarGraph />
-      <MosquitoDetectedRow />
-      <Ocean />
-
-      {/* NOTIF */}
-      {/* {deviceTooFar && < />} */}
+      <MyMap />
     </div>
   );
 };

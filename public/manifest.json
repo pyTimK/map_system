@@ -1,6 +1,6 @@
 {
-  "name": "Mosquito Rippler",
-  "short_name": "Mosquito Rippler",
+  "name": "San Rafel Map",
+  "short_name": "San Rafel Map",
   "icons": [
     {
       "src": "/images/icons/maskable_icon_x48.png",
@@ -41,8 +41,8 @@
   ],
   "scope": "/",
   "start_url": "/",
-  "description": "Mosquito Rippler: Arduino boat creates ripples to eliminate mosquito larvae, detects mosquitoes via microphone, and offers real-time control. Your mosquito-free zone, now at your fingertips!",
+  "description": "Explore San Rafael's 34 barangays, with population breakdowns by gender and land use details, from residential to industrial. Dive into the essence of our community on our user-friendly platform.",
   "display": "standalone",
-  "theme_color": "#448AFF",
-  "background_color": "#448AFF"
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF"
 }

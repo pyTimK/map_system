@@ -14,6 +14,7 @@ const SettingsIcon: React.FC<SettingsIconProps> = ({ onClick }) => (
     whileTap={{ scale: 0.8 }}
     onClick={onClick}
     xmlns="http://www.w3.org/2000/svg"
+    className="cursor-pointer"
   >
     <g opacity="0.9">
       <path

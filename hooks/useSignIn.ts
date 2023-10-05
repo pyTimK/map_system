@@ -1,4 +1,5 @@
 import { auth } from "@/app/firebase";
+import { PagesWrapperContext } from "@/app/pages/PagesWrapper";
 import isValidEmail from "@/myfunctions/is_valid_email";
 import notify from "@/myfunctions/notify";
 import {
@@ -6,7 +7,13 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { FormEventHandler, MouseEventHandler, useRef, useState } from "react";
+import {
+  FormEventHandler,
+  MouseEventHandler,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 
 function useSignInPage() {
   const [type, setType] = useState(SignInType.signIn);
@@ -14,6 +21,7 @@ function useSignInPage() {
   const passwordRef = useRef<HTMLInputElement>(null);
   const [errorEmailInput, setErrorEmailInput] = useState(false);
   const [errorPasswordInput, setErrorPasswordInput] = useState(false);
+  const { setShowSignIn } = useContext(PagesWrapperContext);
 
   function toggleType() {
     setType(type === SignInType.signIn ? SignInType.logIn : SignInType.signIn);
@@ -57,6 +65,7 @@ function useSignInPage() {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
+        setShowSignIn(true);
         // ...
       })
       .catch((error) => {
@@ -88,6 +97,7 @@ function useSignInPage() {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
+        setShowSignIn(true);
       })
       .catch((error) => {
         const errorCode = error.code;

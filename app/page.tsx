@@ -7,6 +7,7 @@ import { auth } from "./firebase";
 import LoadingPage from "./pages_outer/LoadingPage";
 import SignInPage from "./pages_outer/SignInPage";
 import PagesWrapper from "./pages/PagesWrapper";
+import MyMap from "@/components/custom/MyMap";
 
 export default function Home() {
   return (
@@ -31,10 +32,6 @@ const Wrapper = () => {
 
   if (loading) {
     return <LoadingPage />;
-  }
-
-  if (user === null) {
-    return <SignInPage />;
   }
 
   return <PagesWrapper user={user} />;

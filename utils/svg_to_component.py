@@ -22,12 +22,26 @@ def convert_svg_to_react(svg_content, delimeter: str):
 
 def create_react_component(svg_content, component_name):
     return f"""
-const {component_name}: React.FC = () => (
+import {{ motion }} from "framer-motion";
+import {{ MouseEventHandler }} from "react";
+
+interface {component_name}Props {{
+  onClick?: MouseEventHandler<SVGSVGElement>;
+}}
+
+const {component_name}: React.FC<{component_name}Props> = ({{onClick}}) => (
   {svg_content}
 );
 
 export default {component_name};
 """
+
+def convert_to_motion_svg(react_svg_content):
+    modified_string = react_svg_content.replace("<svg",
+        "<motion.svg onClick={onClick} className='cursor-pointer' whileTap={{ scale: 0.8 }}").replace("</svg>", "</motion.svg>")
+
+    return modified_string
+    
 
 def main():
     # if len(sys.argv) < 2:
@@ -51,6 +65,7 @@ def main():
         react_svg_content = convert_svg_to_react(svg_content, '-')
         react_svg_content = convert_svg_to_react(svg_content, '-')
         react_svg_content = convert_svg_to_react(react_svg_content, ':')
+        react_svg_content = convert_to_motion_svg(react_svg_content)
         react_component = create_react_component(react_svg_content, component_name)
 
         with open(component_full_dir, 'w') as file:

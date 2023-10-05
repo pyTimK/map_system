@@ -12,12 +12,12 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBuXFiS6zeNvm8IqXqY7FSmsQPYfzpqt_w",
-  authDomain: "mosquito-rippler.firebaseapp.com",
-  projectId: "mosquito-rippler",
-  storageBucket: "mosquito-rippler.appspot.com",
-  messagingSenderId: "122076932552",
-  appId: "1:122076932552:web:dd0bd15c374868094738fd",
+  apiKey: "AIzaSyAwL_EEKKy__YqPErN6wa7X-f0R1aMbRcA",
+  authDomain: "san-rafael-map.firebaseapp.com",
+  projectId: "san-rafael-map",
+  storageBucket: "san-rafael-map.appspot.com",
+  messagingSenderId: "826576021760",
+  appId: "1:826576021760:web:57d8abb5cfce5660adabe5",
 };
 
 // Initialize Firebase

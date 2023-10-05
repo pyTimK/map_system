@@ -1,3 +1,4 @@
+import { jsoFont } from "@/styles/fonts";
 import Title from "./Title";
 
 interface HeaderInterface {
@@ -6,11 +7,9 @@ interface HeaderInterface {
 
 const Header: React.FC<HeaderInterface> = ({ children }) => {
   return (
-    <div className="flex items-center justify-between w-full px-4 pt-4 ">
+    <div className="flex items-center justify-between w-full px-4 py-2 ">
       <div className="flex items-center gap-4">{children}</div>
-      <div className="w-20">
-        <Title />
-      </div>
+      <p className={`${jsoFont}`}>San Rafael Map</p>
     </div>
   );
 };

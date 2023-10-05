@@ -8,6 +8,7 @@ interface ExitIconProps {
 const ExitIcon: React.FC<ExitIconProps> = ({ onClick }) => (
   <motion.svg
     width="33"
+    className="cursor-pointer"
     height="27"
     viewBox="0 0 33 27"
     fill="none"
