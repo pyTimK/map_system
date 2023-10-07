@@ -6,6 +6,7 @@ import useSignInPage, { SignInType } from "@/hooks/useSignIn";
 import { interFont, jsoFont } from "@/styles/fonts";
 import { useContext } from "react";
 import { PagesWrapperContext } from "../pages/PagesWrapper";
+import BackPage from "@/components/custom/BackPage";
 
 const SignInPage: React.FC = () => {
   const {
@@ -59,13 +60,7 @@ const SignInPage: React.FC = () => {
           />
         </form>
       </div>
-      <div
-        className="absolute top-12 left-12 flex gap-3 items-center cursor-pointer"
-        onClick={() => setShowSignIn(false)}
-      >
-        <BackIcon />
-        <p className={`${jsoFont} text-red text-2xl`}>Back</p>
-      </div>
+      <BackPage />
     </div>
   );
 };

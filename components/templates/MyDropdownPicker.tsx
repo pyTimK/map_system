@@ -6,6 +6,7 @@ interface MyDropDownPickerProps {
   options: { value: string; label: string }[];
   error?: boolean;
   onChange: () => void;
+  placeholder?: string;
 }
 
 const MyDropDownPicker: React.FC<MyDropDownPickerProps> = ({
@@ -14,6 +15,7 @@ const MyDropDownPicker: React.FC<MyDropDownPickerProps> = ({
   options,
   error,
   onChange,
+  placeholder,
 }) => {
   return (
     <Select
@@ -24,20 +26,25 @@ const MyDropDownPicker: React.FC<MyDropDownPickerProps> = ({
         onChange();
         setValue(newValue?.value);
       }}
+      placeholder={placeholder}
       styles={{
         control: (baseStyles, state) => ({
           ...baseStyles,
-          borderColor: error ? "red" : "white",
+          borderColor: error ? "red" : "black",
           backgroundColor: "transparent",
         }),
         placeholder: (baseStyles, state) => ({
           ...baseStyles,
-          color: "white",
+          color: "black",
+          fontFamily: "cursive",
+          fontSize: "1.5rem",
         }),
 
         singleValue: (baseStyles, state) => ({
           ...baseStyles,
-          color: "white",
+          color: "black",
+          fontFamily: "cursive",
+          fontSize: "1.5rem",
         }),
       }}
     />

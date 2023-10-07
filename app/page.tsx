@@ -4,10 +4,8 @@ import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { auth } from "./firebase";
-import LoadingPage from "./pages_outer/LoadingPage";
-import SignInPage from "./pages_outer/SignInPage";
 import PagesWrapper from "./pages/PagesWrapper";
-import MyMap from "@/components/custom/MyMap";
+import LoadingPage from "./pages_outer/LoadingPage";
 
 export default function Home() {
   return (

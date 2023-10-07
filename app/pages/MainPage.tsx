@@ -6,12 +6,15 @@ import { PagesWrapperContext } from "./PagesWrapper";
 import ExitIcon from "@/components/svg/icon/ExitIcon";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import ImportIcon from "@/components/custom/ImportIcon";
+import ImportIcon from "@/components/svg/icon/ImportIcon";
 import { motion } from "framer-motion";
+import { useCalculateDivHeight } from "@/hooks/useCalculateDivHeight";
 
 interface MainPageInterface {}
 const MainPage: React.FC<MainPageInterface> = () => {
-  const { user, setShowSignIn, readingData } = useContext(PagesWrapperContext);
+  //! GET DATA
+  const { user, setShowSignIn, setShowImport, barangayData } =
+    useContext(PagesWrapperContext);
 
   //! DISABLE BACK DEFAULT BEHAVIOUR
   useEffect(() => {
@@ -35,14 +38,22 @@ const MainPage: React.FC<MainPageInterface> = () => {
     };
   }, []);
 
+  //! AUTOMATIC MAP HEIGHT
+  const [sourceRef, targetRef] = useCalculateDivHeight(
+    (sourceHeight) => `calc(100vh - ${sourceHeight}px)`
+  );
+
   return (
     <div>
       {/* HEADER */}
-      <Header>
+      <Header ref={sourceRef}>
         {user === null ? (
           <SettingsIcon onClick={() => setShowSignIn(true)} />
         ) : (
-          <div className="flex items-center gap-10">
+          <div
+            className="flex items-center gap-10"
+            onClick={() => setShowImport(true)}
+          >
             <ExitIcon onClick={() => signOut(auth)} />
             <motion.div
               className="flex items-center border border-black rounded-lg pl-1 pr-3 cursor-pointer select-none"
@@ -58,7 +69,7 @@ const MainPage: React.FC<MainPageInterface> = () => {
       </Header>
 
       {/* CONTENT */}
-      <MyMap />
+      <MyMap ref={targetRef} />
     </div>
   );
 };

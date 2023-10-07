@@ -30,10 +30,14 @@ module.exports = {
 
         // custom
         light_blue: "#66DBE2",
+        lighter_blue: "#C2F2F4",
         blue: "#0B81EF",
         red: '#C52222',
         orange: '#F27935',
         green: '#23B244',
+        'light-green': '#A3D9A5',
+        'light-red': '#F6B9B9',
+        'light-orange': '#F9D5B5',
       },
     },
     
