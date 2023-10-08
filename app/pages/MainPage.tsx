@@ -9,9 +9,14 @@ import { auth } from "../firebase";
 import ImportIcon from "@/components/svg/icon/ImportIcon";
 import { motion } from "framer-motion";
 import { useCalculateDivHeight } from "@/hooks/useCalculateDivHeight";
+import { twMerge } from "tailwind-merge";
+import useDeviceDimensions from "@/hooks/useDeviceDimensions";
 
 interface MainPageInterface {}
 const MainPage: React.FC<MainPageInterface> = () => {
+  //! USE DEVICE
+  const { screenWidth } = useDeviceDimensions();
+
   //! GET DATA
   const { user, setShowSignIn, setShowImport, barangayData } =
     useContext(PagesWrapperContext);
@@ -56,13 +61,23 @@ const MainPage: React.FC<MainPageInterface> = () => {
           >
             <ExitIcon onClick={() => signOut(auth)} />
             <motion.div
-              className="flex items-center border border-black rounded-lg pl-1 pr-3 cursor-pointer select-none"
+              className={twMerge(
+                "flex items-center pl-1 pr-3 border border-black rounded-lg cursor-pointer select-none",
+                screenWidth < 1200 ? "pl-0 pr-2 text-sm" : ""
+              )}
               whileTap={{ scale: 0.9 }}
             >
               <div className="scale-50">
                 <ImportIcon />
               </div>
-              <p className="">Import Data</p>
+              <p
+                className={twMerge(
+                  "text-xs",
+                  screenWidth > 1200 ? "text-base" : ""
+                )}
+              >
+                Import {screenWidth > 1200 ? "Data" : ""}
+              </p>
             </motion.div>
           </div>
         )}

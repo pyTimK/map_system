@@ -13,10 +13,16 @@ import GoogleMapReact from "google-map-react";
 import { forwardRef, useContext, useEffect, useState } from "react";
 import MyModal from "../templates/MyModal";
 import MyDropDownPicker from "../templates/MyDropdownPicker";
+import MyPieChart from "./MyPieChart";
+import useDeviceDimensions from "@/hooks/useDeviceDimensions";
+import { twMerge } from "tailwind-merge";
 
 interface MyMapProps {}
 
 const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
+  //! USE DEVICE
+  const { screenWidth } = useDeviceDimensions();
+
   //! BARANGAY DATA
   const { barangayData } = useContext(PagesWrapperContext);
 
@@ -29,15 +35,37 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
 
   //! MODAL
   const { isModalOpen, openModal, closeModal } = useModal();
+  let modalWidth;
+  if (screenWidth < 1200) {
+    modalWidth = "80vw";
+  } else if (screenWidth < 1600) {
+    modalWidth = "60vw";
+  } else {
+    modalWidth = "45vw";
+  }
 
   //! MARKER CLICK
+
   const handleMarkerClick = (barangay: BarangayLocationData) => {
+    let computedLat;
+    let computedLng;
+
+    if (screenWidth < 1600) {
+      computedLat = barangay.lat;
+      computedLng = barangay.lng - 0.05;
+    } else {
+      computedLat = barangay.lat;
+      computedLng = barangay.lng - 0.08;
+    }
+
     setSelectedBarangay(barangay);
     console.log(`${barangay.name} clicked: ${barangay.lat}, ${barangay.lng}`);
-    setCenter({
-      lat: barangay.lat,
-      lng: barangay.lng - 0.1,
-    });
+    if (screenWidth > 1200) {
+      setCenter({
+        lat: computedLat,
+        lng: computedLng,
+      });
+    }
     openModal();
   };
 
@@ -154,34 +182,43 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
         closeModal={closeModal}
         title={selectedBarangay?.name ?? ""}
         height="75vh"
-        width="45vw"
-        className="translate-x-0 left-20"
+        width={modalWidth}
+        className={twMerge(
+          "overflow-auto ",
+          screenWidth < 1200
+            ? "-translate-x-1/2 left-1/2"
+            : "translate-x-0 left-20"
+        )}
         classNameInner="m-0"
+        classNameContent="overflow-auto"
       >
-        <div className="flex justify-center gap-6">
-          <div className="w-60">
-            <MyDropDownPicker
-              options={yearDropdownOptions}
-              onChange={() => {}}
-              setValue={(value) => {
-                setSelectedYear(value);
-                setSelectedMonth(undefined);
-              }}
-              value={selectedYear}
-              placeholder="Select Year"
-            />
+        <div className="flex flex-col ">
+          <div className="flex justify-center gap-6 mt-5">
+            <div className="w-60">
+              <MyDropDownPicker
+                options={yearDropdownOptions}
+                onChange={() => {}}
+                setValue={(value) => {
+                  setSelectedYear(value);
+                  setSelectedMonth(undefined);
+                }}
+                value={selectedYear}
+                placeholder="Select Year"
+              />
+            </div>
+            <div className="w-60">
+              <MyDropDownPicker
+                options={monthDropdownOptions}
+                onChange={() => {}}
+                setValue={(value) => {
+                  setSelectedMonth(value as keyof MonthBarangayData);
+                }}
+                value={selectedMonth}
+                placeholder="Select Month"
+              />
+            </div>
           </div>
-          <div className="w-60">
-            <MyDropDownPicker
-              options={monthDropdownOptions}
-              onChange={() => {}}
-              setValue={(value) => {
-                setSelectedMonth(value as keyof MonthBarangayData);
-              }}
-              value={selectedMonth}
-              placeholder="Select Month"
-            />
-          </div>
+          <MyPieChart selectedBarangayData={selectedBarangayData} />
         </div>
       </MyModal>
     </div>

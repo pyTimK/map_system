@@ -12,6 +12,7 @@ interface MyModalProps {
   width?: string;
   className?: string;
   classNameInner?: string;
+  classNameContent?: string;
 }
 
 const MyModal: React.FC<MyModalProps> = ({
@@ -24,6 +25,7 @@ const MyModal: React.FC<MyModalProps> = ({
   width,
   className,
   classNameInner,
+  classNameContent,
 }) => {
   return (
     <Modal
@@ -42,7 +44,12 @@ const MyModal: React.FC<MyModalProps> = ({
       >
         <div className="absolute w-full h-full rotate-[-2deg] border-2 border-white rounded-xl "></div>
         {/*  */}
-        <div className="absolute w-full h-full  bg-white px-5 py-5 rounded-xl ">
+        <div
+          className={twMerge(
+            "absolute w-full h-full  bg-white px-5 py-5 rounded-xl ",
+            classNameContent
+          )}
+        >
           <p className="text-2xl font-bold text-center text-smooth_black">
             {title}
           </p>
