@@ -114,10 +114,11 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
   let selectedBarangayData = constructEmptyRawBarangayData();
   if (selectedYear !== undefined && selectedMonth !== undefined) {
     const monthBarangayData = yearBarangayData?.[selectedYear!];
+    console.log(monthBarangayData);
     selectedBarangayData =
       monthBarangayData[selectedMonth!] ?? constructEmptyRawBarangayData();
   }
-  console.log(selectedBarangayData);
+  // console.log(selectedBarangayData);
 
   return (
     // Important! Always set the container height explicitly

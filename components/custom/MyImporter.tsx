@@ -5,10 +5,24 @@ import {
   constructEmptyBarangayData,
 } from "@/classes/BarangayData";
 import FirebaseHelper from "@/classes/FirebaseHelper";
+import myFetch from "@/myfunctions/myFetch";
 import { Importer, ImporterField } from "react-csv-importer";
 import "react-csv-importer/dist/index.css";
 
 interface MyImporterProps {}
+
+async function mlApiAndSaveToFirebase(barangayData: BarangayData) {
+  const data = await myFetch(
+    "https://san-rafael-map-ml.fly.dev",
+    "",
+    "",
+    "POST",
+    barangayData
+  );
+  if (data) {
+    FirebaseHelper.addBarangayData(data);
+  }
+}
 
 const MyImporter: React.FC<MyImporterProps> = ({}) => {
   return (
@@ -46,7 +60,7 @@ const MyImporter: React.FC<MyImporterProps> = ({}) => {
           };
         }
 
-        FirebaseHelper.addBarangayData(barangayData);
+        mlApiAndSaveToFirebase(barangayData);
       }}
       defaultNoHeader={false} // optional, keeps "data has headers" checkbox off by default
       restartable={true} // optional, lets user choose to upload another file when import is complete

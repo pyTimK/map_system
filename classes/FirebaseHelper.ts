@@ -7,14 +7,24 @@ import {
   setDoc,
   writeBatch,
 } from "firebase/firestore";
-import { BarangayData } from "./BarangayData";
+import {
+  BarangayData,
+  YearBarangayData,
+  constructEmptyBarangayData,
+} from "./BarangayData";
 
 abstract class FirebaseHelper {
   static addBarangayData(barangayData: BarangayData) {
     const id = Date.now().toString();
 
     const batch = writeBatch(db);
-    batch.set(doc(db, "barangay_data", id), barangayData);
+    for (const barangay in barangayData) {
+      console.log(barangay);
+      const barangayDoc = doc(db, "barangay_data", id, "barangay", barangay);
+      batch.set(barangayDoc, barangayData[barangay as keyof BarangayData], {
+        merge: true,
+      });
+    }
     batch.update(doc(db, "data", "admin_data"), { csvs: arrayUnion(id) });
     batch.update(doc(db, "data", "data"), { default: id });
     batch.commit();
@@ -28,14 +38,17 @@ abstract class FirebaseHelper {
   }
 
   static async getBarangayData(id: string) {
-    const docRef = doc(db, "barangay_data", id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      return docSnap.data() as BarangayData;
-    } else {
-      return null;
+    const barangayData = constructEmptyBarangayData();
+    for (const barangay in barangayData) {
+      const barangayDocRef = doc(db, "barangay_data", id, "barangay", barangay);
+      const barangaySnap = await getDoc(barangayDocRef);
+      if (barangaySnap.exists()) {
+        barangayData[barangay as keyof BarangayData] =
+          barangaySnap.data() as YearBarangayData;
+      }
     }
+    console.log(barangayData);
+    return barangayData;
   }
 }
 
