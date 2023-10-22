@@ -18,7 +18,7 @@ export const ImportPagesContext = createContext({
 interface ImportPageProps {}
 
 const ImportPage: React.FC<ImportPageProps> = ({}) => {
-  const { setShowImport, settingsData } = useContext(PagesWrapperContext);
+  const { settingsData } = useContext(PagesWrapperContext);
   const adminData = useFirestoreData(
     doc(db, "data", "admin_data"),
     constructEmptyAdminData
@@ -81,7 +81,6 @@ const ImportPage: React.FC<ImportPageProps> = ({}) => {
               );
             })}
         </div>
-        <BackPage onClick={() => setShowImport(false)} />
       </div>
     </ImportPagesContext.Provider>
   );

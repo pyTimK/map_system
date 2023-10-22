@@ -1,25 +1,33 @@
-import Header from "@/components/custom/Header";
+import MyHeader from "@/components/custom/MyHeader";
 import MyMap from "@/components/custom/MyMap";
 import SettingsIcon from "@/components/svg/icon/SettingsIcon";
-import { useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { PagesWrapperContext } from "./PagesWrapper";
 import ExitIcon from "@/components/svg/icon/ExitIcon";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import ImportIcon from "@/components/svg/icon/ImportIcon";
-import { motion } from "framer-motion";
 import { useCalculateDivHeight } from "@/hooks/useCalculateDivHeight";
-import { twMerge } from "tailwind-merge";
-import useDeviceDimensions from "@/hooks/useDeviceDimensions";
+import ImportButton from "@/components/custom/ImportButton";
+import DashboardPage from "./DashboardPage";
+import ImportPage from "./ImportPage";
+
+export enum Page {
+  Dashboard,
+  Map,
+  Import,
+}
+
+const MainPageContext = createContext({
+  page: Page.Dashboard,
+  setPage: {} as React.Dispatch<React.SetStateAction<Page>>,
+});
 
 interface MainPageInterface {}
 const MainPage: React.FC<MainPageInterface> = () => {
-  //! USE DEVICE
-  const { screenWidth } = useDeviceDimensions();
-
   //! GET DATA
-  const { user, setShowSignIn, setShowImport, barangayData } =
-    useContext(PagesWrapperContext);
+  const { user, setShowSignIn } = useContext(PagesWrapperContext);
+
+  const [page, setPage] = useState(Page.Dashboard);
 
   //! DISABLE BACK DEFAULT BEHAVIOUR
   useEffect(() => {
@@ -45,47 +53,60 @@ const MainPage: React.FC<MainPageInterface> = () => {
 
   //! AUTOMATIC MAP HEIGHT
   const [sourceRef, targetRef] = useCalculateDivHeight(
-    (sourceHeight) => `calc(100vh - ${sourceHeight}px)`
+    (sourceHeight) => `calc(100vh - ${sourceHeight}px)`,
+    [page]
   );
 
   return (
-    <div>
+    <MainPageContext.Provider value={{ page, setPage }}>
       {/* HEADER */}
-      <Header ref={sourceRef}>
-        {user === null ? (
-          <SettingsIcon onClick={() => setShowSignIn(true)} />
-        ) : (
-          <div
-            className="flex items-center gap-10"
-            onClick={() => setShowImport(true)}
-          >
-            <ExitIcon onClick={() => signOut(auth)} />
-            <motion.div
-              className={twMerge(
-                "flex items-center pl-1 pr-3 border border-black rounded-lg cursor-pointer select-none",
-                screenWidth < 1200 ? "pl-0 pr-2 text-sm" : ""
-              )}
-              whileTap={{ scale: 0.9 }}
-            >
-              <div className="scale-50">
-                <ImportIcon />
-              </div>
-              <p
-                className={twMerge(
-                  "text-xs",
-                  screenWidth > 1200 ? "text-base" : ""
-                )}
-              >
-                Import {screenWidth > 1200 ? "Data" : ""}
-              </p>
-            </motion.div>
-          </div>
-        )}
-      </Header>
+      <MyHeader ref={sourceRef}>
+        <div className="flex items-center gap-10">
+          {/* NOT ADMIN */}
+          {user === null && (
+            <SettingsIcon onClick={() => setShowSignIn(true)} />
+          )}
+
+          {/* ADMIN */}
+          {user !== null && <ExitIcon onClick={() => signOut(auth)} />}
+
+          <Tab name="Dashboard" page={Page.Dashboard} />
+          <p className="text-xl select-none">|</p>
+          <Tab name="Map" page={Page.Map} />
+
+          {/* ADMIN */}
+          {user !== null && (
+            <div className="flex items-center gap-10">
+              <p className="text-xl select-none">|</p>
+              <Tab name="Import" page={Page.Import} />
+            </div>
+          )}
+        </div>
+      </MyHeader>
 
       {/* CONTENT */}
-      <MyMap ref={targetRef} />
-    </div>
+      {page === Page.Dashboard && <DashboardPage />}
+      {page === Page.Map && <MyMap ref={targetRef} />}
+      {page === Page.Import && <ImportPage />}
+    </MainPageContext.Provider>
+  );
+};
+
+interface TabInterface {
+  name: string;
+  page: Page;
+}
+
+const Tab: React.FC<TabInterface> = ({ name, page }) => {
+  const { setPage } = useContext(MainPageContext);
+
+  return (
+    <p
+      className="text-xl  cursor-pointer select-none "
+      onClick={() => setPage(page)}
+    >
+      {name}
+    </p>
   );
 };
 

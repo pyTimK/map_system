@@ -32,6 +32,10 @@ abstract class FirebaseHelper {
 
   static removeBarangayData(id: string) {
     const batch = writeBatch(db);
+    for (const barangay in constructEmptyBarangayData()) {
+      const barangayDoc = doc(db, "barangay_data", id, "barangay", barangay);
+      batch.delete(barangayDoc);
+    }
     batch.delete(doc(db, "barangay_data", id));
     batch.update(doc(db, "data", "admin_data"), { csvs: arrayRemove(id) });
     batch.commit();

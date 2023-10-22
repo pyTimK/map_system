@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 
 // Custom hook to set the height of one div based on another div
 export const useCalculateDivHeight = (
-  computeHeight: (sourceHeight: number) => string
+  computeHeight: (sourceHeight: number) => string,
+  dependencies: any[] = []
 ) => {
   const sourceRef = useRef<HTMLDivElement | null>(null);
   const targetRef = useRef<HTMLDivElement | null>(null);
@@ -18,7 +19,7 @@ export const useCalculateDivHeight = (
 
       // Update the state with the source height (if needed)
     }
-  }, []);
+  }, [sourceRef.current, targetRef.current, dependencies]);
 
   return [sourceRef, targetRef];
 };

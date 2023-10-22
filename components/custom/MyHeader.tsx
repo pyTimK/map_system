@@ -5,12 +5,12 @@ interface HeaderInterface {
   children?: React.ReactNode;
 }
 
-const Header = forwardRef<HTMLDivElement, HeaderInterface>(
+const MyHeader = forwardRef<HTMLDivElement, HeaderInterface>(
   ({ children }, ref) => {
     return (
       <div
         ref={ref}
-        className="flex items-center justify-between w-full px-4 py-2"
+        className="flex items-center justify-between w-full px-4 py-4 border-b border-black"
         id="header"
       >
         <div className="flex items-center gap-4">{children}</div>
@@ -19,5 +19,5 @@ const Header = forwardRef<HTMLDivElement, HeaderInterface>(
     );
   }
 );
-
-export default Header;
+MyHeader.displayName = "MyHeader";
+export default MyHeader;

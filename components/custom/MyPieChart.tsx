@@ -7,7 +7,7 @@ interface MyPieChartProps {
 
 const MyPieChart: React.FC<MyPieChartProps> = ({ selectedBarangayData }) => {
   const landAreaData = [
-    ["Land Area", "Area"],
+    ["Land Area By Type of Land", "Area"],
     ["Residential", selectedBarangayData["Residential"]],
     ["Agricultural", selectedBarangayData["Agricultural"]],
     ["Commercial", selectedBarangayData["Commercial"]],
@@ -29,23 +29,33 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ selectedBarangayData }) => {
 
   return (
     <div className="flex flex-col items-center h-full gap-3">
-      <Chart
-        key={Math.random()}
-        chartType="BarChart"
-        width="100%"
-        height="45vh"
-        data={landAreaData}
-        options={{ title: "Land Area" }}
-      />
+      <div className="bg-true-white w-full p-2 border border-black my-10">
+        <Chart
+          key={Math.random()}
+          chartType="BarChart"
+          width="100%"
+          height="45vh"
+          data={landAreaData}
+          options={{
+            title: "Land Area by Type of Land",
 
-      <Chart
-        key={`${selectedBarangayData["male_population"]}-${selectedBarangayData["female_population"]}`}
-        chartType="PieChart"
-        data={sexData}
-        options={{ title: "Population by Sex" }}
-        width={"80%"}
-        height={"20vh"}
-      />
+            hAxis: {
+              title: "Land Area in Hectares (Ha)",
+            },
+          }}
+        />
+      </div>
+
+      <div className="bg-true-white w-full p-2 border border-black flex justify-center items-center ">
+        <Chart
+          key={`${selectedBarangayData["male_population"]}-${selectedBarangayData["female_population"]}`}
+          chartType="PieChart"
+          data={sexData}
+          options={{ title: "Population by Sex" }}
+          width={"100%"}
+          height={"30vh"}
+        />
+      </div>
     </div>
   );
 };

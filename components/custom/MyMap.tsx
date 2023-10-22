@@ -59,7 +59,7 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
     }
 
     setSelectedBarangay(barangay);
-    console.log(`${barangay.name} clicked: ${barangay.lat}, ${barangay.lng}`);
+    // console.log(`${barangay.name} clicked: ${barangay.lat}, ${barangay.lng}`);
     if (screenWidth > 1200) {
       setCenter({
         lat: computedLat,
@@ -78,6 +78,7 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
     keyof MonthBarangayData | undefined
   >();
 
+  //! Auto Update year on barangay change
   useEffect(() => {
     // Set selected year
     const _yearSelected = yearBarangayData
@@ -86,16 +87,21 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
           .reverse()[0]
       : undefined;
     setSelectedYear(_yearSelected);
+  }, [selectedBarangay]);
+
+  //! Auto Update month on year change
+  useEffect(() => {
+    if (selectedYear === undefined) return;
 
     // Set selected month
-    let _monthBarangayData = yearBarangayData[_yearSelected!];
+    let _monthBarangayData = yearBarangayData[selectedYear!];
     let _monthSelected = _monthBarangayData
-      ? (Object.keys(_monthBarangayData)
-          .sort((a, b) => parseInt(a) - parseInt(b))
-          .reverse()[0] as keyof MonthBarangayData)
+      ? (Object.keys(_monthBarangayData).sort(
+          (a, b) => parseInt(a) - parseInt(b)
+        )[0] as keyof MonthBarangayData)
       : undefined;
     setSelectedMonth(_monthSelected);
-  }, [selectedBarangay]);
+  }, [selectedYear]);
 
   const yearDropdownOptions = Object.keys(yearBarangayData ?? {}).map(
     (year) => ({
@@ -114,11 +120,9 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
   let selectedBarangayData = constructEmptyRawBarangayData();
   if (selectedYear !== undefined && selectedMonth !== undefined) {
     const monthBarangayData = yearBarangayData?.[selectedYear!];
-    console.log(monthBarangayData);
     selectedBarangayData =
       monthBarangayData[selectedMonth!] ?? constructEmptyRawBarangayData();
   }
-  // console.log(selectedBarangayData);
 
   return (
     // Important! Always set the container height explicitly
@@ -127,7 +131,7 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
       style={{
         width: "100%",
         // maxWidth: "700px",
-        border: "1px solid black",
+        // border: "1px solid black",
       }}
     >
       <GoogleMapReact
@@ -154,10 +158,10 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
           // });
 
           // Add on click listener
-          new maps.event.addListener(map, "click", (event: any) => {
-            // addMarker(event.latLng, map, maps);
-            console.log(event.latLng.lat(), event.latLng.lng());
-          });
+          // new maps.event.addListener(map, "click", (event: any) => {
+          //   // addMarker(event.latLng, map, maps);
+          //   console.log(event.latLng.lat(), event.latLng.lng());
+          // });
 
           // Display barangay markers
           Barangays.forEach((barangay) => {
@@ -185,7 +189,7 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
         height="75vh"
         width={modalWidth}
         className={twMerge(
-          "overflow-auto ",
+          "",
           screenWidth < 1200
             ? "-translate-x-1/2 left-1/2"
             : "translate-x-0 left-20"
@@ -271,5 +275,6 @@ const mapNumberStringToMonth = (month: string) => {
       return "";
   }
 };
+MyMap.displayName = "MyMap";
 
 export default MyMap;

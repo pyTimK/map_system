@@ -60,7 +60,7 @@ const SignInPage: React.FC = () => {
           />
         </form>
       </div>
-      <BackPage />
+      <BackPage onClick={() => setShowSignIn(false)}></BackPage>
     </div>
   );
 };

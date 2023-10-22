@@ -18,14 +18,12 @@ import {
 } from "react";
 import { db } from "../firebase";
 import SignInPage from "../pages_outer/SignInPage";
-import ImportPage from "./ImportPage";
 import MainPage from "./MainPage";
 import FirebaseHelper from "@/classes/FirebaseHelper";
 
 export const PagesWrapperContext = createContext({
   user: null as User | null,
   setShowSignIn: {} as Dispatch<SetStateAction<boolean>>,
-  setShowImport: {} as Dispatch<SetStateAction<boolean>>,
   settingsData: {} as FirestoreDataType<SettingsData>,
   barangayData: {} as BarangayData,
 });
@@ -42,9 +40,6 @@ const PagesWrapper: React.FC<PagesWrapperProps> = ({ user }) => {
       setShowSignIn(false);
     }
   }, [user]);
-
-  //! IMPORT PAGE
-  const [showImport, setShowImport] = useState(false);
 
   //! SETTINGS DATA
   const settingsData = useFirestoreData(
@@ -69,9 +64,9 @@ const PagesWrapper: React.FC<PagesWrapperProps> = ({ user }) => {
 
   return (
     <PagesWrapperContext.Provider
-      value={{ user, setShowSignIn, setShowImport, settingsData, barangayData }}
+      value={{ user, setShowSignIn, settingsData, barangayData }}
     >
-      {showSignIn ? <SignInPage /> : showImport ? <ImportPage /> : <MainPage />}
+      {showSignIn ? <SignInPage /> : <MainPage />}
     </PagesWrapperContext.Provider>
   );
 };

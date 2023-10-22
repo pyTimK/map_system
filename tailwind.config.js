@@ -38,6 +38,9 @@ module.exports = {
         'light-green': '#A3D9A5',
         'light-red': '#F6B9B9',
         'light-orange': '#F9D5B5',
+        'light-bg': '#FBFDFD',
+        'dark-bg': '#E2EBF1',
+        "true-white": "#FFFFFF",
       },
     },
     
