@@ -1,3 +1,40 @@
+export interface BarangayDataSummary {
+  POBLACION: BarangaySummary;
+  "BALAGTAS-BMA": BarangaySummary;
+  "BANCA-BANCA": BarangaySummary;
+  CAINGIN: BarangaySummary;
+  "CORAL NA BATO": BarangaySummary;
+  "CRUZ NA DAAN": BarangaySummary;
+  "DAGAT-DAGATAN": BarangaySummary;
+  "DILIMAN I": BarangaySummary;
+  "DILIMAN II": BarangaySummary;
+  CAPIHAN: BarangaySummary;
+  LIBIS: BarangaySummary;
+  LICO: BarangaySummary;
+  MAASIM: BarangaySummary;
+  "MABALAS-BALAS": BarangaySummary;
+  MAGUINAO: BarangaySummary;
+  MARONQUILLO: BarangaySummary;
+  PACO: BarangaySummary;
+  PANSUMALOC: BarangaySummary;
+  PANTUBIG: BarangaySummary;
+  "PASONG BANGKAL": BarangaySummary;
+  "PASONG CALLOS": BarangaySummary;
+  "PASONG INCHIC": BarangaySummary;
+  "PINAC-PINACAN": BarangaySummary;
+  PULO: BarangaySummary;
+  "PULONG BAYABAS": BarangaySummary;
+  SALAPUNGAN: BarangaySummary;
+  SAMPALOC: BarangaySummary;
+  "SAN AGUSTIN": BarangaySummary;
+  "SAN ROQUE": BarangaySummary;
+  "SAPANG PAHALANG": BarangaySummary;
+  TALACSAN: BarangaySummary;
+  TAMBUBONG: BarangaySummary;
+  TUKOD: BarangaySummary;
+  ULINGAO: BarangaySummary;
+}
+
 export interface BarangayData {
   POBLACION: YearBarangayData;
   "BALAGTAS-BMA": YearBarangayData;
@@ -73,6 +110,24 @@ export const constructEmptyBarangayData = (): BarangayData => {
     ULINGAO: {},
   };
 };
+
+export const constructEmptyBarangayDataSummary = (): BarangayDataSummary => {
+  const barangayDataSummary = {} as BarangayDataSummary;
+
+  Object.keys(constructEmptyBarangayData()).forEach((barangay) => {
+    barangayDataSummary[barangay as keyof BarangayDataSummary] = {
+      totalLandArea: 0,
+      rawBarangayData: constructEmptyRawBarangayData(),
+    };
+  });
+
+  return barangayDataSummary;
+};
+
+export interface BarangaySummary {
+  totalLandArea: number;
+  rawBarangayData: RawBarangayData;
+}
 
 export const Barangays: BarangayLocationData[] = [
   { name: "POBLACION", lat: 14.957582, lng: 120.964746 },

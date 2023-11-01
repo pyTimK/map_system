@@ -1,3 +1,5 @@
 export abstract class StorageNames {}
 
-export const Constants = {};
+export const Constants = {
+  delimeter: "_",
+};

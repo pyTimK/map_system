@@ -12,46 +12,80 @@ import {
   YearBarangayData,
   constructEmptyBarangayData,
 } from "./BarangayData";
+import { Constants } from "./constants";
 
 abstract class FirebaseHelper {
-  static addBarangayData(barangayData: BarangayData) {
-    const id = Date.now().toString();
+  //! ADD BARANGAY DATA
+  static addBarangayData(barangayData: BarangayData, name: String) {
+    const timestampId = Date.now().toString();
+    const timestampNameId = timestampId + Constants.delimeter + name;
 
     const batch = writeBatch(db);
     for (const barangay in barangayData) {
-      console.log(barangay);
-      const barangayDoc = doc(db, "barangay_data", id, "barangay", barangay);
+      const barangayDoc = doc(
+        db,
+        "barangay_data",
+        timestampId,
+        "barangay",
+        barangay
+      );
       batch.set(barangayDoc, barangayData[barangay as keyof BarangayData], {
         merge: true,
       });
     }
-    batch.update(doc(db, "data", "admin_data"), { csvs: arrayUnion(id) });
-    batch.update(doc(db, "data", "data"), { default: id });
+    batch.update(doc(db, "data", "admin_data"), {
+      csvs: arrayUnion(timestampNameId),
+    });
+    batch.update(doc(db, "data", "data"), { default: timestampNameId });
     batch.commit();
   }
 
-  static removeBarangayData(id: string) {
+  //! REMOVE BARANGAY DATA
+  static removeBarangayData(timestampNameId: string) {
+    if (!timestampNameId.includes(Constants.delimeter)) return;
+
+    const timestampId = timestampNameId.split(Constants.delimeter)[0];
+
     const batch = writeBatch(db);
     for (const barangay in constructEmptyBarangayData()) {
-      const barangayDoc = doc(db, "barangay_data", id, "barangay", barangay);
+      const barangayDoc = doc(
+        db,
+        "barangay_data",
+        timestampId,
+        "barangay",
+        barangay
+      );
       batch.delete(barangayDoc);
     }
-    batch.delete(doc(db, "barangay_data", id));
-    batch.update(doc(db, "data", "admin_data"), { csvs: arrayRemove(id) });
+    batch.delete(doc(db, "barangay_data", timestampNameId));
+    batch.update(doc(db, "data", "admin_data"), {
+      csvs: arrayRemove(timestampNameId),
+    });
     batch.commit();
   }
 
-  static async getBarangayData(id: string) {
+  //! GET BARANGAY DATA
+  static async getBarangayData(timestampNameId: string) {
+    if (!timestampNameId.includes(Constants.delimeter)) return;
+
+    const timestampId = timestampNameId.split(Constants.delimeter)[0];
+
     const barangayData = constructEmptyBarangayData();
     for (const barangay in barangayData) {
-      const barangayDocRef = doc(db, "barangay_data", id, "barangay", barangay);
+      const barangayDocRef = doc(
+        db,
+        "barangay_data",
+        timestampId,
+        "barangay",
+        barangay
+      );
       const barangaySnap = await getDoc(barangayDocRef);
       if (barangaySnap.exists()) {
         barangayData[barangay as keyof BarangayData] =
           barangaySnap.data() as YearBarangayData;
       }
     }
-    console.log(barangayData);
+    console.log(timestampNameId, barangayData);
     return barangayData;
   }
 }

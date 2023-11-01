@@ -7,9 +7,9 @@ import ExitIcon from "@/components/svg/icon/ExitIcon";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useCalculateDivHeight } from "@/hooks/useCalculateDivHeight";
-import ImportButton from "@/components/custom/ImportButton";
 import DashboardPage from "./DashboardPage";
 import ImportPage from "./ImportPage";
+import AnimatedDrawingBorder from "@/components/templates/AnimatedDrawingBorder/AnimatedDrawingBorder";
 
 export enum Page {
   Dashboard,
@@ -57,18 +57,34 @@ const MainPage: React.FC<MainPageInterface> = () => {
     [page]
   );
 
+  //! TITLE
+  let title;
+  switch (page) {
+    case Page.Dashboard:
+      title = "Monitoring And Analysis of Land Conversion";
+      break;
+    case Page.Map:
+      title = "San Rafael Map";
+      break;
+    case Page.Import:
+      title = "Monitoring And Analysis of Land Conversion";
+      break;
+  }
+
   return (
     <MainPageContext.Provider value={{ page, setPage }}>
       {/* HEADER */}
-      <MyHeader ref={sourceRef}>
+      <MyHeader ref={sourceRef} title={title}>
         <div className="flex items-center gap-10">
           {/* NOT ADMIN */}
           {user === null && (
-            <SettingsIcon onClick={() => setShowSignIn(true)} />
+            <SettingsIcon onClick={() => setShowSignIn(true)} tooltip="ADMIN" />
           )}
 
           {/* ADMIN */}
-          {user !== null && <ExitIcon onClick={() => signOut(auth)} />}
+          {user !== null && (
+            <ExitIcon onClick={() => signOut(auth)} tooltip="LOGOUT" />
+          )}
 
           <Tab name="Dashboard" page={Page.Dashboard} />
           <p className="text-xl select-none">|</p>
@@ -98,15 +114,15 @@ interface TabInterface {
 }
 
 const Tab: React.FC<TabInterface> = ({ name, page }) => {
-  const { setPage } = useContext(MainPageContext);
+  const { page: selectedPage, setPage } = useContext(MainPageContext);
 
   return (
-    <p
-      className="text-xl  cursor-pointer select-none "
+    <AnimatedDrawingBorder
+      label={name}
       onClick={() => setPage(page)}
-    >
-      {name}
-    </p>
+      rectStartingWidth={0}
+      isSelected={selectedPage == page}
+    />
   );
 };
 

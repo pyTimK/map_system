@@ -120,6 +120,7 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
   let selectedBarangayData = constructEmptyRawBarangayData();
   if (selectedYear !== undefined && selectedMonth !== undefined) {
     const monthBarangayData = yearBarangayData?.[selectedYear!];
+    console.log(selectedYear, selectedMonth, monthBarangayData, barangayData);
     selectedBarangayData =
       monthBarangayData[selectedMonth!] ?? constructEmptyRawBarangayData();
   }
@@ -196,6 +197,7 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
         )}
         classNameInner="m-0"
         classNameContent="overflow-auto"
+        hideLine
       >
         <div className="flex flex-col ">
           <div className="flex justify-center gap-6 mt-5">

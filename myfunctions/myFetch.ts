@@ -16,10 +16,10 @@ const myFetch = async (
       headers,
       body: JSON.stringify(body_data), // Convert data to JSON string and send it in the request body
     });
-    console.log("res");
-    console.log(res);
+    // console.log("res");
+    // console.log(res);
     const data = await res.json();
-    console.log(`FETCHED ${base_url}: ${JSON.stringify(data)}`);
+    // console.log(`FETCHED ${base_url}: ${JSON.stringify(data)}`);
     return data;
   } catch (_e) {
     console.log("ERROR FETCHING");

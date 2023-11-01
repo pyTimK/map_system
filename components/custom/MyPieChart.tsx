@@ -40,7 +40,7 @@ const MyPieChart: React.FC<MyPieChartProps> = ({ selectedBarangayData }) => {
             title: "Land Area by Type of Land",
 
             hAxis: {
-              title: "Land Area in Hectares (Ha)",
+              title: "Land Area in Square Meters (sqm)",
             },
           }}
         />

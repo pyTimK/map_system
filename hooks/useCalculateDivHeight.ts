@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 // Custom hook to set the height of one div based on another div
 export const useCalculateDivHeight = (

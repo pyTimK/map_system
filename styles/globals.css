@@ -108,3 +108,10 @@ input[type=number] {
     width: 100% !important;
   } 
 }
+
+
+
+/*! CSV IMPORTER */
+.CSVImporter_ProgressDisplay__count::after {
+  content: " rows imported";
+}

@@ -6,12 +6,16 @@ import {
 } from "@/classes/BarangayData";
 import FirebaseHelper from "@/classes/FirebaseHelper";
 import myFetch from "@/myfunctions/myFetch";
+import { useState } from "react";
 import { Importer, ImporterField } from "react-csv-importer";
 import "react-csv-importer/dist/index.css";
 
 interface MyImporterProps {}
 
-async function mlApiAndSaveToFirebase(barangayData: BarangayData) {
+async function mlApiAndSaveToFirebase(
+  barangayData: BarangayData,
+  name: string
+) {
   const data = await myFetch(
     "https://san-rafael-map-ml.fly.dev",
     "",
@@ -20,18 +24,40 @@ async function mlApiAndSaveToFirebase(barangayData: BarangayData) {
     barangayData
   );
   if (data) {
-    FirebaseHelper.addBarangayData(data);
+    FirebaseHelper.addBarangayData(data, name);
   }
 }
 
 const MyImporter: React.FC<MyImporterProps> = ({}) => {
+  const [name, setName] = useState("");
+  const [rows, setRows] = useState<ImportBarangayData[]>([]);
+
   return (
     <Importer
-      dataHandler={async (rows, { startIndex }) => {
+      dataHandler={async (newRows, { startIndex }) => {
         // required, may be called several times
         // receives a list of parsed objects based on defined fields and user column mapping;
         // (if this callback returns a promise, the widget will wait for it before parsing more data)
 
+        setRows((prevRows) => [...prevRows, ...newRows]);
+      }}
+      defaultNoHeader={false} // optional, keeps "data has headers" checkbox off by default
+      restartable={true} // optional, lets user choose to upload another file when import is complete
+      onStart={({ file, preview, fields, columnFields }) => {
+        // optional, invoked when user has mapped columns and started import
+      }}
+      onComplete={({ file, preview, fields, columnFields }) => {
+        // optional, invoked right after import is done (but user did not dismiss/reset the widget yet)
+
+        //! GET BASE FILE NAME
+        let name = file.name;
+        if (name.endsWith(".csv")) {
+          name = name.substring(0, name.length - 4);
+        }
+
+        setName(file.name);
+
+        //! SAVE TO FIREBASE
         const barangayData = constructEmptyBarangayData();
 
         for (const row of rows) {
@@ -60,18 +86,32 @@ const MyImporter: React.FC<MyImporterProps> = ({}) => {
           };
         }
 
-        mlApiAndSaveToFirebase(barangayData);
+        mlApiAndSaveToFirebase(barangayData, name);
+
+        //! BACK BUTTON
+        const backButtonElements: NodeListOf<HTMLElement> =
+          document.querySelectorAll(".CSVImporter_IconButton");
+        const textButtonElements: NodeListOf<HTMLElement> =
+          document.querySelectorAll(".CSVImporter_TextButton");
+        let uploadMoreButtonElement: HTMLElement | undefined;
+        textButtonElements.forEach(function (textButton) {
+          if (textButton.textContent === "Upload More") {
+            uploadMoreButtonElement = textButton;
+          }
+        });
+
+        if (backButtonElements.length > 0 && uploadMoreButtonElement) {
+          const backButton = backButtonElements[0];
+          backButton.removeAttribute("disabled");
+          backButton.onclick = () => {
+            uploadMoreButtonElement?.click();
+          };
+
+          // uploadMoreButtonElement.onclick;
+          // console.log("uploadMoreButtonElement.onclick");
+          // console.log(uploadMoreButtonElement.onclick);
+        }
       }}
-      defaultNoHeader={false} // optional, keeps "data has headers" checkbox off by default
-      restartable={true} // optional, lets user choose to upload another file when import is complete
-      onStart={({ file, preview, fields, columnFields }) => {
-        // optional, invoked when user has mapped columns and started import
-        // prepMyAppForIncomingData();
-      }}
-      // onComplete={({ file, preview, fields, columnFields }) => {
-      //   // optional, invoked right after import is done (but user did not dismiss/reset the widget yet)
-      //   // showMyAppToastNotification();
-      // }}
       // onClose={({ file, preview, fields, columnFields }) => {
       //   // optional, if this is specified the user will see a "Finish" button after import is done,
       //   // which will call this when clicked

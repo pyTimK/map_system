@@ -3,10 +3,11 @@ import { forwardRef } from "react";
 
 interface HeaderInterface {
   children?: React.ReactNode;
+  title: string;
 }
 
 const MyHeader = forwardRef<HTMLDivElement, HeaderInterface>(
-  ({ children }, ref) => {
+  ({ children, title }, ref) => {
     return (
       <div
         ref={ref}
@@ -14,7 +15,7 @@ const MyHeader = forwardRef<HTMLDivElement, HeaderInterface>(
         id="header"
       >
         <div className="flex items-center gap-4">{children}</div>
-        <p className={`${jsoFont}`}>San Rafael Map</p>
+        <p className={`${jsoFont}`}>{title}</p>
       </div>
     );
   }
