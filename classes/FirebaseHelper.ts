@@ -2,6 +2,7 @@ import { db } from "@/app/firebase";
 import {
   arrayRemove,
   arrayUnion,
+  deleteDoc,
   doc,
   getDoc,
   setDoc,
@@ -21,6 +22,8 @@ abstract class FirebaseHelper {
     const timestampNameId = timestampId + Constants.delimeter + name;
 
     const batch = writeBatch(db);
+    const barangayDataDoc = doc(db, "barangay_data", timestampId);
+    batch.set(barangayDataDoc, { name: name });
     for (const barangay in barangayData) {
       const barangayDoc = doc(
         db,
@@ -46,6 +49,7 @@ abstract class FirebaseHelper {
 
     const timestampId = timestampNameId.split(Constants.delimeter)[0];
 
+    console.log(`removing barangay data for ${timestampNameId}`);
     const batch = writeBatch(db);
     for (const barangay in constructEmptyBarangayData()) {
       const barangayDoc = doc(
@@ -57,7 +61,7 @@ abstract class FirebaseHelper {
       );
       batch.delete(barangayDoc);
     }
-    batch.delete(doc(db, "barangay_data", timestampNameId));
+    batch.delete(doc(db, "barangay_data", timestampId));
     batch.update(doc(db, "data", "admin_data"), {
       csvs: arrayRemove(timestampNameId),
     });
@@ -65,10 +69,15 @@ abstract class FirebaseHelper {
   }
 
   //! GET BARANGAY DATA
-  static async getBarangayData(timestampNameId: string) {
-    if (!timestampNameId.includes(Constants.delimeter)) return;
+  static async getBarangayData(timestampId: string) {
+    console.log(timestampId);
 
-    const timestampId = timestampNameId.split(Constants.delimeter)[0];
+    const barangayDataDoc = doc(db, "barangay_data", timestampId);
+
+    if (!(await getDoc(barangayDataDoc)).exists()) {
+      console.log(`no barangay data for ${timestampId}`);
+      return;
+    }
 
     const barangayData = constructEmptyBarangayData();
     for (const barangay in barangayData) {
@@ -85,7 +94,7 @@ abstract class FirebaseHelper {
           barangaySnap.data() as YearBarangayData;
       }
     }
-    console.log(timestampNameId, barangayData);
+    console.log(timestampId, barangayData);
     return barangayData;
   }
 }

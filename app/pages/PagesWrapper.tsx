@@ -20,6 +20,8 @@ import { db } from "../firebase";
 import SignInPage from "../pages_outer/SignInPage";
 import MainPage from "./MainPage";
 import FirebaseHelper from "@/classes/FirebaseHelper";
+import TimestampNameId from "@/classes/TimestampNameId";
+import { Constants } from "@/classes/constants";
 
 export const PagesWrapperContext = createContext({
   user: null as User | null,
@@ -53,13 +55,16 @@ const PagesWrapper: React.FC<PagesWrapperProps> = ({ user }) => {
   );
 
   useEffect(() => {
-    const id = settingsData.default;
+    if (!settingsData.default) return;
+    if (!settingsData.default.includes(Constants.delimeter)) return;
 
-    if (!id) return;
+    const timestampNameId = TimestampNameId.fromStr(settingsData.default);
 
-    FirebaseHelper.getBarangayData(id).then((data) => {
-      setBarangayData(data ?? constructEmptyBarangayData());
-    });
+    FirebaseHelper.getBarangayData(`${timestampNameId.timestamp}`).then(
+      (data) => {
+        setBarangayData(data ?? constructEmptyBarangayData());
+      }
+    );
   }, [settingsData.default]);
 
   return (

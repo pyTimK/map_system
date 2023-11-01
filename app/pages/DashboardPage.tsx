@@ -68,11 +68,15 @@ const DashboardPage: React.FC<DashboardPageProps> = ({}) => {
       overallRawData.male_population += rawData.male_population;
       overallRawData.female_population += rawData.female_population;
 
+      console.log(rawData.male_population);
+
       _totalLandArea += _barangayDataSummary.totalLandArea;
     });
 
     setBarangayDataSummary(barangayDataSummary);
     setOverallRawData(overallRawData);
+    console.log("overallRawData");
+    console.log(overallRawData);
     setTotalLandArea(_totalLandArea);
   }, [barangayData]);
 

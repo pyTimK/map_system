@@ -4,6 +4,6 @@ export interface SettingsData {
 
 export const constructEmptySettingsData = (): SettingsData => {
   return {
-    default: "1698833483831_2021",
+    default: "1698836084172_2019-2023",
   };
 };

@@ -120,7 +120,11 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
   let selectedBarangayData = constructEmptyRawBarangayData();
   if (selectedYear !== undefined && selectedMonth !== undefined) {
     const monthBarangayData = yearBarangayData?.[selectedYear!];
+
     console.log(selectedYear, selectedMonth, monthBarangayData, barangayData);
+
+    if (monthBarangayData === undefined) return;
+
     selectedBarangayData =
       monthBarangayData[selectedMonth!] ?? constructEmptyRawBarangayData();
   }
