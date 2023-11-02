@@ -17,6 +17,7 @@ async function mlApiAndSaveToFirebase(
   name: string
 ) {
   const data = await myFetch(
+    // "http://127.0.0.1:5000",
     "https://san-rafael-map-ml.fly.dev",
     "",
     "",

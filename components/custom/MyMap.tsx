@@ -13,7 +13,7 @@ import GoogleMapReact from "google-map-react";
 import { forwardRef, useContext, useEffect, useState } from "react";
 import MyModal from "../templates/MyModal";
 import MyDropDownPicker from "../templates/MyDropdownPicker";
-import MyPieChart from "./MyPieChart";
+import BarangayCarts from "./BarangayCharts";
 import useDeviceDimensions from "@/hooks/useDeviceDimensions";
 import { twMerge } from "tailwind-merge";
 
@@ -229,7 +229,10 @@ const MyMap = forwardRef<HTMLDivElement, MyMapProps>(({}, ref) => {
               />
             </div>
           </div>
-          <MyPieChart selectedBarangayData={selectedBarangayData} />
+          <BarangayCarts
+            selectedBarangayData={selectedBarangayData}
+            barangayName={selectedBarangay?.name}
+          />
         </div>
       </MyModal>
     </div>
